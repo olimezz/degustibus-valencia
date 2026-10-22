@@ -1,46 +1,39 @@
 /* ==========================================================================
    deGustibus - Ristorante y Bar (L'Eixample, València)
    Mobile-First Design System & Responsive Stylesheet
+   Design Philosophy: Minimalist Luxury, Monochromatic Harmony & Editorial Clarity
    ========================================================================== */
 
 :root {
-  /* Brand Core Colors (from Logo & Identity) */
-  --color-tomato: #e52421;
-  --color-tomato-dark: #c41c19;
-  --color-tomato-light: #ff4744;
-  --color-tomato-glow: rgba(229, 36, 33, 0.25);
+  /* Brand Unified Palette: Clean Graphite & Warm Stone */
+  --color-brand-primary: #18181b;      /* Deep Charcoal / Nero Antracite */
+  --color-brand-hover: #27272a;        /* Graphite hover */
+  --color-brand-subtle: #3f3f46;       /* Medium Slate */
   
-  --color-green: #14b022;
-  --color-green-dark: #0f8e1a;
-  --color-green-light: #2ee63e;
-  --color-green-glow: rgba(20, 176, 34, 0.2);
+  --color-warm-cream: #faf8f5;        /* Premium warm cream background */
+  --color-warm-beige: #f3efe6;        /* Subtle contrast section */
+  --color-warm-card: #ffffff;         /* Pure clean card background */
+  --color-border-subtle: #e4e4e7;     /* Minimal stone border */
+  --color-border-hover: #a1a1aa;      /* Border highlight */
 
   --color-charcoal: #121214;
-  --color-charcoal-card: #1a1a1e;
-  --color-charcoal-border: #27272a;
-  --color-graphite: #2a2a30;
-  
-  --color-warm-cream: #fbf9f5;
-  --color-warm-beige: #f3efe6;
-  --color-warm-stone: #ece7db;
   --color-text-main: #18181b;
-  --color-text-muted: #64748b;
-  --color-text-warm: #a8a29e;
+  --color-text-muted: #71717a;
+  --color-text-light: #a1a1aa;
 
   /* Font Families */
   --font-heading: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
 
-  /* Shadows & Glows */
+  /* Shadows */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
-  --shadow-warm: 0 20px 50px rgba(229, 36, 33, 0.15);
-  --shadow-green: 0 20px 50px rgba(20, 176, 34, 0.15);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.09);
 
   --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Reset & Base Setup */
@@ -64,12 +57,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Prevent inputs from zooming on iOS Safari */
+/* Prevent iOS input zoom */
 input, select, textarea {
   font-size: 16px !important;
 }
 
-/* Typography Utilities */
+/* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   letter-spacing: -0.02em;
@@ -94,10 +87,9 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-tomato);
+  background: var(--color-brand-primary);
 }
 
-/* Hide horizontal scrollbar while keeping touch scroll */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -106,87 +98,177 @@ h1, h2, h3, h4, h5, h6 {
   scrollbar-width: none;
 }
 
-/* Glassmorphism Classes */
+/* Glassmorphism Navigation */
 .glass-nav {
-  background: rgba(251, 249, 245, 0.94);
+  background: rgba(250, 248, 245, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(236, 231, 219, 0.85);
+  border-bottom: 1px solid rgba(228, 228, 231, 0.85);
 }
 
 .glass-nav-scrolled {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Buttons */
+/* ==========================================================================
+   HOMOGENIZED BRAND BUTTON SYSTEM (Unified Single Color Palette)
+   Removed clashing red, green, orange styles across the site
+   ========================================================================== */
+
+/* Primary Unified Brand Button */
+.btn-brand,
 .btn-tomato {
-  background: linear-gradient(135deg, var(--color-tomato), var(--color-tomato-dark));
-  color: #ffffff;
-  box-shadow: 0 6px 20px var(--color-tomato-glow);
+  background-color: var(--color-brand-primary);
+  color: #ffffff !important;
+  border: 1px solid var(--color-brand-primary);
   transition: all var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
 }
+.btn-brand:hover,
 .btn-tomato:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(229, 36, 33, 0.4);
-  background: linear-gradient(135deg, var(--color-tomato-light), var(--color-tomato));
+  background-color: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
+.btn-brand:active,
 .btn-tomato:active {
   transform: translateY(0);
 }
 
-.btn-green {
-  background: linear-gradient(135deg, var(--color-green), var(--color-green-dark));
-  color: #ffffff;
-  box-shadow: 0 6px 20px var(--color-green-glow);
+/* Secondary / Outline Brand Button */
+.btn-outline-brand,
+.btn-outline-dark {
+  background-color: transparent;
+  color: var(--color-brand-primary) !important;
+  border: 1.5px solid var(--color-brand-primary);
   transition: all var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+.btn-outline-brand:hover,
+.btn-outline-dark:hover {
+  background-color: var(--color-brand-primary);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* Unified WhatsApp Action Button (Brand Cohesive with subtle icon) */
+.btn-green {
+  background-color: var(--color-brand-primary);
+  color: #ffffff !important;
+  border: 1px solid var(--color-brand-primary);
+  transition: all var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
 }
 .btn-green:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(20, 176, 34, 0.35);
-  background: linear-gradient(135deg, var(--color-green-light), var(--color-green));
+  background-color: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
-.btn-green:active {
-  transform: translateY(0);
-}
-
-.btn-outline-dark {
-  background: transparent;
-  color: var(--color-charcoal);
-  border: 1.5px solid var(--color-charcoal);
-  transition: all var(--transition-smooth);
-}
-.btn-outline-dark:hover {
-  background: var(--color-charcoal);
-  color: #ffffff;
-  transform: translateY(-2px);
+.btn-green i {
+  color: #22c55e; /* Discreet green accent exclusively on the WhatsApp icon */
 }
 
-/* Card Hover Elevate */
+/* Minimalist Pill / Badge */
+.pill-neutral {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
+}
+
+/* Card Hover Elevation */
 .hover-lift {
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
 }
 @media (min-width: 1024px) {
   .hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-hover);
   }
 }
 
-/* Food Menu Items Active Tab */
-.menu-tab-btn.active {
-  background-color: var(--color-charcoal) !important;
+/* ==========================================================================
+   MINIMALIST EDITORIAL MENU STYLING (Strictly NO Images & Single Color)
+   ========================================================================== */
+
+.menu-item-row {
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+}
+.menu-item-row:hover {
+  border-color: #a1a1aa;
+}
+
+/* Clean Minimalist Category Tabs (Unified Brand Style, No Rainbow Buttons) */
+.menu-category-btn {
+  background-color: transparent;
+  color: #71717a;
+  border: 1px solid #e4e4e7;
+  transition: all var(--transition-fast);
+  font-weight: 600;
+  cursor: pointer;
+}
+.menu-category-btn:hover {
+  background-color: #f4f4f5;
+  color: #18181b;
+  border-color: #d4d4d8;
+}
+.menu-category-btn.active {
+  background-color: var(--color-brand-primary) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  border-color: var(--color-brand-primary) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* Animated Glow */
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.08); }
+/* Unified Neutral Allergen Badges (Single Color, Zero Rainbow Colors) */
+.badge-allergen,
+.badge-allergen-none {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  background-color: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
+  letter-spacing: 0.01em;
 }
 
-.animate-glow-slow {
-  animation: pulseGlow 8s ease-in-out infinite;
+/* Decorative Dotted Leader */
+.menu-leader-dots {
+  flex-grow: 1;
+  border-bottom: 1.5px dotted #d4d4d8;
+  margin: 0 10px;
+  height: 1px;
+  position: relative;
+  top: -4px;
 }
 
 /* Floating WhatsApp / Phone Bar on Mobile */
@@ -200,9 +282,9 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(18, 18, 20, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding: 8px 12px max(10px, env(safe-area-inset-bottom));
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
 }
 
 @media (min-width: 768px) {
@@ -211,7 +293,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Open / Closed Live Pulse */
+/* Live Open / Closed Pulse Indicator */
 .status-dot-open {
   width: 8px;
   height: 8px;
@@ -225,24 +307,15 @@ h1, h2, h3, h4, h5, h6 {
 .status-dot-closed {
   width: 8px;
   height: 8px;
-  background-color: #ef4444;
+  background-color: #71717a;
   border-radius: 50%;
   display: inline-block;
 }
 
 @keyframes pulseGreen {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 
 /* Modal styling */
@@ -258,15 +331,15 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 .hidden-modal .modal-box {
-  transform: scale(0.94) translateY(15px);
+  transform: scale(0.95) translateY(12px);
   opacity: 0;
 }
 
 /* Focus styles */
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--color-tomato) !important;
-  box-shadow: 0 0 0 3px rgba(229, 36, 33, 0.15) !important;
+  border-color: var(--color-brand-primary) !important;
+  box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.1) !important;
 }
 
 /* Brand Logo Image in Header */
