@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <title>Menú Oficial · deGustibus Ristorante y Bar | València</title>
+  <meta name="description" content="Menú y carta digital de deGustibus Ristorante y Bar en Carrer de Borriana, 25 (L'Eixample, Valencia). Consulta todos los platos, pizzas, postres y bebidas.">
+  <meta name="author" content="deGustibus Ristorante y Bar">
+  <meta name="theme-color" content="#18181b">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Menú Oficial · deGustibus Ristorante y Bar">
+  <meta property="og:description" content="Carta completa para mesas: entrantes, pastas frescas al momento, pizzas artesanales, postres caseros y bebidas.">
+  <meta property="og:image" content="assets/images/degustibus-logo.png">
+  <meta property="og:type" content="restaurant.menu">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/degustibus-logo.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#18181b',
+              light: '#27272a',
+              subtle: '#3f3f46'
+            },
+            charcoal: '#121214',
+            warm: {
+              cream: '#faf8f5',
+              beige: '#f3efe6',
+              card: '#ffffff'
+            }
+          },
+          fontFamily: {
+            heading: ['Poppins', 'Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    /* Specific QR menu styling */
+    .menu-cat-nav {
+      position: sticky;
+      top: 64px;
+      z-index: 30;
+      background: rgba(250, 248, 245, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(228, 228, 231, 0.8);
+    }
+    .cat-pill {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.95rem;
+      border-radius: 9999px;
+      color: #52525b;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+    }
+    .cat-pill:hover, .cat-pill.active {
+      color: #ffffff;
+      background: #18181b;
+      border-color: #18181b;
+      transform: translateY(-1px);
+    }
+    .dish-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .dish-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+    .price-pill {
+      background: #f4f4f5;
+      color: #18181b;
+      font-weight: 700;
+      border-radius: 9999px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.875rem;
+      letter-spacing: -0.01em;
+      border: 1px solid #e4e4e7;
+    }
+  </style>
+</head>
+
+<body class="bg-warm-cream text-neutral-900 antialiased pb-28 sm:pb-16 selection:bg-neutral-900 selection:text-white">
+
+  <!-- ==========================================================================
+       STICKY TOP BRAND HEADER
+       ========================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Name -->
+      <a href="index.html" class="flex items-center gap-3 group" title="Ir a la página principal">
+        <img 
+          src="assets/images/degustibus-logo.png" 
+          alt="deGustibus Logo" 
+          class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+        >
+        <div class="hidden sm:block">
+          <span class="block font-heading font-extrabold text-base tracking-tight text-neutral-900 leading-tight">
+            deGustibus
+          </span>
+          <span class="block text-[11px] font-medium text-neutral-500">
+            Ristorante y Bar · València
+          </span>
+        </div>
+      </a>
+
+      <!-- Center QR Badge -->
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-xs font-semibold text-neutral-800">
+        <i class="fa-solid fa-qrcode text-xs text-neutral-600"></i>
+        <span>Carta en Mesa</span>
+      </div>
+
+      <!-- Action Buttons: Back to Site + Call/WhatsApp -->
+      <div class="flex items-center gap-2">
+        <a 
+          href="index.html" 
+          class="px-3 py-1.5 rounded-full border border-stone-300 text-xs font-bold text-neutral-700 hover:text-black hover:border-black transition-colors flex items-center gap-1.5"
+          title="Volver a la web del restaurante"
+        >
+          <i class="fa-solid fa-house text-[11px]"></i>
+          <span class="hidden sm:inline">Web Principal</span>
+        </a>
+        
+        <a 
+          href="https://wa.me/34629099295?text=Hola,%20estamos%20en%20la%20mesa%20de%20deGustibus%20y%20necesitamos%20asistencia" 
+          target="_blank"
+          rel="noopener"
+          class="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+          title="Contactar con el restaurante"
+        >
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span class="hidden md:inline">Camarero</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO & SEARCH SECTION
+       ========================================================================== -->
+  <section class="pt-6 pb-4 sm:pt-8 sm:pb-6 px-4 sm:px-6 max-w-5xl mx-auto">
+    
+    <div class="text-center max-w-2xl mx-auto mb-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/70 border border-stone-300/80 text-[11px] font-bold uppercase tracking-wider text-neutral-700 mb-2">
+        <i class="fa-solid fa-utensils text-xs"></i>
+        <span>Menú Oficial Degustibus</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold font-heading text-neutral-900 tracking-tight">
+        Nuestra Carta
+      </h1>
+      <p class="text-xs sm:text-sm text-neutral-600 mt-1.5">
+        Carrer de Borriana, 25 (L'Eixample, València) · Precios con IVA incluido
+      </p>
+    </div>
+
+    <!-- Live Search Input -->
+    <div class="relative max-w-md mx-auto mb-2">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-400">
+        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+      </div>
+      <input 
+        type="text" 
+        id="menuSearch" 
+        placeholder="Buscar plato, ingrediente o bebida..." 
+        class="w-full pl-10 pr-10 py-2.5 rounded-2xl bg-white border border-stone-300 text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent shadow-xs transition-all"
+        autocomplete="off"
+      >
+      <button 
+        id="clearSearch" 
+        class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-neutral-400 hover:text-neutral-700" 
+        aria-label="Limpiar búsqueda"
+      >
+        <i class="fa-solid fa-circle-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <div id="searchCounter" class="hidden text-center text-xs font-semibold text-neutral-500 mt-2"></div>
+
+    <!-- Allergen Notice Alert Box -->
+    <div class="mt-4 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-900 flex items-start gap-2.5 max-w-2xl mx-auto">
+      <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5 text-sm shrink-0"></i>
+      <span><strong>Aviso de Alérgenos:</strong> Si usted padece alguna alergia o intolerancia alimentaria, por favor comuníquelo a nuestro personal antes de ordenar.</span>
+    </div>
+
+  </section>
+
+  <!-- ==========================================================================
+       STICKY CATEGORY BAR
+       ========================================================================== -->
+  <nav class="menu-cat-nav py-2.5 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+      <a href="#cat-entrantes" class="cat-pill active"><i class="fa-solid fa-cheese text-xs mr-1 opacity-70"></i>Entrantes</a>
+      <a href="#cat-primeros" class="cat-pill"><i class="fa-solid fa-bowl-food text-xs mr-1 opacity-70"></i>Primeros Platos</a>
+      <a href="#cat-infantil" class="cat-pill"><i class="fa-solid fa-child text-xs mr-1 opacity-70"></i>Menú Infantil</a>
+      <a href="#cat-pizza" class="cat-pill"><i class="fa-solid fa-pizza-slice text-xs mr-1 opacity-70"></i>Pizza</a>
+      <a href="#cat-postres" class="cat-pill"><i class="fa-solid fa-cake-candles text-xs mr-1 opacity-70"></i>Postres</a>
+      <a href="#cat-cafeteria" class="cat-pill"><i class="fa-solid fa-mug-saucer text-xs mr-1 opacity-70"></i>Cafetería</a>
+      <a href="#cat-licores" class="cat-pill"><i class="fa-solid fa-martini-glass-citrus text-xs mr-1 opacity-70"></i>Licores & Cócteles</a>
+      <a href="#cat-bebidas" class="cat-pill"><i class="fa-solid fa-wine-glass text-xs mr-1 opacity-70"></i>Vinos & Bebidas</a>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       MAIN MENU CONTENT (PAGES 1 - 4)
+       ========================================================================== -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-12 sm:space-y-16">
+
+    <!-- ========================================================================
+         PAGE 1: ENTRANTES, TABLAS, PRIMEROS PLATOS E MENÚ INFANTIL
+         ======================================================================== -->
+    
+    <!-- ENTRANTES & TABLAS -->
+    <section id="cat-entrantes" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 1 · Para Empezar</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-bread-slice text-neutral-700 text-lg"></i>
+            Entrantes y Tablas
+          </h2>
+        </div>
+        <span class="text-xs font-bold text-neutral-500 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200">10 Platos</span>
+      </div>
+
+      <!-- Subsection: Entrantes -->
+      <div class="mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Entrantes
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          
+          <!-- RACIÓN DE PAN -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="racion de pan entrantes">
+            <div class="flex-1">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Ración de Pan
+              </h4>
+              <p class="text-xs text-neutral-500 mt-1">
+                Pan fresco artesanal servido a la mesa.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">2.00 €</span>
+          </article>
+
+          <!-- ENTRANTE DELLO CHEF -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="entrante dello chef">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Entrante dello Chef
+                </h4>
+                <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Especial</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Creación y selección especial de la casa según los mejores ingredientes frescos del día.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">13.00 €</span>
+          </article>
+
+          <!-- ENSALADA CAPRESE -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="ensalada caprese tomate mozzarella albahaca aove">
+            <div class="flex-1">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Ensalada Caprese
+              </h4>
+              <p class="text-xs text-neutral-500 mt-1">
+                Tomate fresco selecto, mozzarella italiana fiordilatte, hojas de albahaca fresca y aceite de oliva virgen extra.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">12.00 €</span>
+          </article>
+
+          <!-- BURRATA -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="burrata fresca cremosa italia">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Burrata
+                </h4>
+                <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-100 text-stone-800">Top Ventas</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Auténtica burrata fresca italiana con corazón cremoso stracciatella, aliñada con aceite de oliva virgen extra.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">12.50 €</span>
+          </article>
+
+          <!-- ENSALADA DEL CHEF -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="ensalada del chef">
+            <div class="flex-1">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Ensalada del Chef
+              </h4>
+              <p class="text-xs text-neutral-500 mt-1">
+                Combinación gourmet de hojas frescas seleccionadas con aderezo exclusivo del chef.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">11.00 €</span>
+          </article>
+
+          <!-- CARPACCIO DE CALABACÍN -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="carpaccio de calabacin calabaza aove parmesano vegetariano">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Carpaccio de Calabacín
+                </h4>
+                <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Vegetariano</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Finas láminas de calabacín fresco marinado con lascas de queso parmesano y aceite de oliva virgen extra.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">10.00 €</span>
+          </article>
+
+          <!-- PROVOLONE FUNDIDO -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="provolone fundido queso horno">
+            <div class="flex-1">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Provolone Fundido
+              </h4>
+              <p class="text-xs text-neutral-500 mt-1">
+                Queso provolone italiano fundido al horno con orégano y especias mediterráneas.
+              </p>
+            </div>
+            <span class="price-pill whitespace-nowrap">9.50 €</span>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Subsection: Tablas -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Tablas Italianas
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          
+          <!-- TABLA MIX -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between" data-name="tabla mix embutidos quesos fiambres italianos">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Tabla Mix
+                </h4>
+                <span class="price-pill">16.50 €</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Surtido selecto combinado de embutidos tradicionales y quesos regionales italianos.
+              </p>
+            </div>
+          </article>
+
+          <!-- TABLA QUESOS ITALIANOS -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between" data-name="tabla quesos italianos formaggi">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Quesos Italianos
+                </h4>
+                <span class="price-pill">16.00 €</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Variedad selecta de quesos típicos de denominación italiana con sus acompañamientos.
+              </p>
+            </div>
+          </article>
+
+          <!-- TABLA FIAMBRES ITALIANOS -->
+          <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between" data-name="tabla fiambres italianos embutidos salumi">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                  Fiambres Italianos
+                </h4>
+                <span class="price-pill">16.00 €</span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-1">
+                Selección de los mejores embutidos y fiambres artesanos importados de Italia.
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PRIMEROS PLATOS -->
+    <section id="cat-primeros" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 1 · Pastas & Segundos</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-plate-wheat text-neutral-700 text-lg"></i>
+            Primeros Platos
+          </h2>
+        </div>
+        <span class="text-xs font-bold text-neutral-500 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200">10 Platos</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+
+        <!-- SPAGHETTI ALLA CARBONARA TRUFADA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="spaghetti alla carbonara trufada pasta trufa guanciale">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Spaghetti alla Carbonara Trufada
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Chef</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Spaghetti con auténtico guanciale italiano crujiente, yema de huevo pasteurizada, pecorino y el toque aromático de trufa.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">14.50 €</span>
+        </article>
+
+        <!-- GNOCCHI CON SALSA TRUFADA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="gnocchi con salsa trufada patata trufa crema">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Gnocchi con Salsa Trufada
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Gnocchi de patata artesanal con delicada salsa cremosa de trufa negra aromática.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.50 €</span>
+        </article>
+
+        <!-- PASTA A CRITERIO DEL CHEF -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="pasta a criterio del chef sugerencia">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Pasta a Criterio del Chef
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-100 text-stone-800">Del Día</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Sugerencia de pasta del día preparada al momento según la inspiración del chef y mercado fresco.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.50 €</span>
+        </article>
+
+        <!-- RAVIOLIS CASEROS DEL CHEF -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="raviolis caseros del chef pasta rellena">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Raviolis Caseros del Chef
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Pasta rellena artesanal elaborada a mano con relleno y salsa casera del chef.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.50 €</span>
+        </article>
+
+        <!-- SPAGHETTI ALLA CARBONARA "ORIGINAL" -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="spaghetti alla carbonara original guanciale huevo pecorino">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Spaghetti alla Carbonara "Original"
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-900 text-white">Clásico</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Auténtica receta romana tradicional: guanciale curado crujiente, yema de huevo y pecorino romano D.O.P. (sin nata).
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.00 €</span>
+        </article>
+
+        <!-- MEZZE MANICHE ALL'AMATRICIANA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="mezze maniche all amatriciana pasta tomate guanciale pecorino">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Mezze Maniche all'Amatriciana
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Pasta corta Mezze Maniche con salsa de tomate italiano San Marzano, guanciale dorado y abundante pecorino romano.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.50 €</span>
+        </article>
+
+        <!-- GNOCCHI CASEROS CON GORGONZOLA, RUCOLA SELVATICA Y NUECES -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="gnocchi caseros con gorgonzola rucola selvatica y nueces">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Gnocchi Caseros con Gorgonzola, Rúcola Selvática y Nueces
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Gnocchi de patata caseros con cremosa salsa de queso gorgonzola italiano, hojas de rúcula salvaje fresca y nueces crujientes.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.00 €</span>
+        </article>
+
+        <!-- LASAÑA BOLOÑESE -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="lasana bolonese carne ragu bechamel gratinada">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Lasaña Boloñese
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Capas de pasta al huevo casera intercaladas con ragú boloñés cocinado lentamente a fuego bajo, bechamel suave y queso gratinado.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.50 €</span>
+        </article>
+
+        <!-- LASAÑA DE VERDURAS -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="lasana de verduras vegetariana">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Lasaña de Verduras
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Vegetariana</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Lasaña artesanal horneada con selección de verduras frescas de temporada, bechamel casera y mozzarella.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.00 €</span>
+        </article>
+
+        <!-- CARRILLADA DE CERDO CON PARMENTIER CON SU SALSA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="carrillada de cerdo con parmentier con su salsa carne">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Carrillada de Cerdo con Parmentier con su Salsa
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Carne</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Melosa carrillada de cerdo estofada lentamente en su propio jugo reducida, servida sobre cremoso puré parmentier.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">14.50 €</span>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- MENÚ INFANTIL -->
+    <section id="cat-infantil" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 1 · Para los Peques</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-child-reaching text-neutral-700 text-lg"></i>
+            Menú Infantil
+          </h2>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/90 rounded-3xl p-5 sm:p-6 shadow-xs dish-card" data-name="menu infantil pasta tomate pizza margherita bebida helado ninos">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 font-bold text-xs uppercase tracking-wider mb-2">
+              Fórmula Completa
+            </div>
+            <h3 class="text-base sm:text-lg font-extrabold font-heading text-neutral-900 uppercase">
+              Menú Infantil
+            </h3>
+            <p class="text-sm text-neutral-700 mt-1 font-medium">
+              Pasta con Tomate o Pizza Margherita <span class="text-neutral-400 mx-1">+</span> 1 Bebida <span class="text-neutral-400 mx-1">+</span> 1 Helado
+            </p>
+            <p class="text-xs text-neutral-500 mt-1.5">
+              Pensado especialmente para los más pequeños con ingredientes suaves y naturales.
+            </p>
+          </div>
+          <div class="text-left sm:text-right">
+            <span class="price-pill text-base sm:text-lg px-4 py-1.5 inline-block bg-neutral-900 text-white border-neutral-900">
+              10.90 €
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         PAGE 2: PIZZA E POSTRES CASEROS
+         ======================================================================== -->
+    
+    <!-- PIZZA -->
+    <section id="cat-pizza" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 2 · Pizzas & Saltimbocca</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-pizza-slice text-neutral-700 text-lg"></i>
+            Pizza
+          </h2>
+        </div>
+        <span class="text-xs font-bold text-neutral-500 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200">11 Especialidades</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+
+        <!-- MARGHERITA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="margherita pizza tomate mozzarella clasica">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Margherita
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-100 text-stone-800">Clásica</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate italiano San Marzano, mozzarella fiordilatte.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">10.50 €</span>
+        </article>
+
+        <!-- YORK -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="york pizza mozzarella tomate jamon york">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              York
+            </h4>
+            <p class="text-xs text-neutral-600 mt-1">
+              Mozzarella, tomate, jamón york.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">11.50 €</span>
+        </article>
+
+        <!-- SEIS QUESOS -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="seis quesos 6 quesos formaggi tomate mozzarella parmesano gorgonzola fontina emmental taleggio">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Seis Quesos
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Especial</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, mozzarella, parmesano, gorgonzola, fontina, emmental, taleggio.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.50 €</span>
+        </article>
+
+        <!-- NAPOLES -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="napoles napoli pizza tomate mozzarella anchoas">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Nápoles
+            </h4>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, mozzarella, anchoas.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.50 €</span>
+        </article>
+
+        <!-- DIABLA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="diabla diavola picante chorizo tomate mozzarella">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Diabla
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Picante</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, mozzarella, chorizo picante italiano (salame piccante).
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">12.50 €</span>
+        </article>
+
+        <!-- JAMÓN CRUDO -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="jamon crudo prosciutto crudo tomate mozzarella jamon crudo italiano rucula parmesano">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Jamón Crudo
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-900 text-white">Gourmet</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, mozzarella, jamón crudo italiano, rúcula y parmesano.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">14.00 €</span>
+        </article>
+
+        <!-- VEGANA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="vegana pizza vegan verdura tomate berenjena calabacin pimiento cebolla">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Vegana
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Vegana</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, berenjena, calabacín, pimiento, cebolla. (Sin lácteos).
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.00 €</span>
+        </article>
+
+        <!-- VEGETARIANA -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="vegetariana pizza verdura tomate mozzarella berenjena calabacin pimiento cebolla">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Vegetariana
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Vegetariana</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Tomate, mozzarella, berenjena, calabacín, pimiento, cebolla.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">13.00 €</span>
+        </article>
+
+        <!-- FOCACCIA DEGUSTIBUS -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="focaccia degustibus queso stracciatella mortadella boloña mortadela">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Focaccia deGustibus
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">Especialidad</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Queso stracciatella fresca y mortadella italiana de alta calidad.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">14.00 €</span>
+        </article>
+
+        <!-- SALTIMBOCCA NAPOLITANO PICANTE -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="saltimbocca napolitano picante friarelli chorizo picante mozzarella bocadillo masa">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Saltimbocca Napolitano Picante
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Picante</span>
+            </div>
+            <p class="text-xs text-neutral-600 mt-1">
+              Friarelli napolitanos, chorizo picante y mozzarella fundida en masa de pizza.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">8.00 €</span>
+        </article>
+
+        <!-- SALTIMBOCCA NAPOLITANO -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="saltimbocca napolitano friarelli york mozzarella bocadillo masa">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Saltimbocca Napolitano
+            </h4>
+            <p class="text-xs text-neutral-600 mt-1">
+              Friarelli napolitanos, jamón york y mozzarella fundida.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">7.50 €</span>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- POSTRES CASEROS -->
+    <section id="cat-postres" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 2 · El Toque Dulce</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-cake-candles text-neutral-700 text-lg"></i>
+            Postres Caseros
+          </h2>
+        </div>
+        <span class="text-xs font-bold text-neutral-500 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200">Elaboración Propia</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+
+        <!-- TARTA FERRERO -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="tarta ferrero chocolate avellana dulce casero">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Tarta Ferrero
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Tarta casera inspirada en el bombón Ferrero Rocher con crema de avellanas y chocolate.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">5.50 €</span>
+        </article>
+
+        <!-- CANNOLO DELLO CHEF -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="cannolo dello chef siciliano ricotta dulce postre">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Cannolo dello Chef
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Tradición</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Crujiente barquillo de cannolo relleno de suave ricotta dulce y toques del chef.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">5.50 €</span>
+        </article>
+
+        <!-- TIRAMISÚ -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="tiramisu cafe mascarpone bizcocho cacao postre clasico">
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+                Tiramisú
+              </h4>
+              <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-stone-900 text-white">Casero</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-1">
+              Receta artesanal tradicional con bizcochos savoiardi empapados en café espresso y crema de queso mascarpone.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">5.50 €</span>
+        </article>
+
+        <!-- PANNA COTTA CON FRUTOS ROJOS -->
+        <article class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-start gap-4" data-name="panna cotta con frutos rojos nata dulce coulis">
+          <div class="flex-1">
+            <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">
+              Panna Cotta con Frutos Rojos
+            </h4>
+            <p class="text-xs text-neutral-500 mt-1">
+              Cremosa panna cotta tradicional italiana servida con coulis artesanal de frutos del bosque.
+            </p>
+          </div>
+          <span class="price-pill whitespace-nowrap">5.00 €</span>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PAGE 3: CAFETERÍA, LICORES E COCKTAIL
+         ======================================================================== -->
+    
+    <!-- CAFETERÍA -->
+    <section id="cat-cafeteria" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 3 · Café Italiano</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-mug-hot text-neutral-700 text-lg"></i>
+            Cafetería
+          </h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cafe expresso espresso">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Café Expresso</span>
+          <span class="price-pill text-xs">1.50 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cortado cafe cortado">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Cortado</span>
+          <span class="price-pill text-xs">1.60 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="carajillo cafe licor">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Carajillo</span>
+          <span class="price-pill text-xs">2.50 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cafe con leche">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Café con Leche</span>
+          <span class="price-pill text-xs">1.80 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cappuchino cappuccino capuchino">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Cappuchino</span>
+          <span class="price-pill text-xs">2.00 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="bon bon cafe bombon leche condensada">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Bon Bon</span>
+          <span class="price-pill text-xs">2.00 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cafe americano largo">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Café Americano</span>
+          <span class="price-pill text-xs">1.80 €</span>
+        </div>
+
+        <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="infusiones te manzanilla poleo te verde">
+          <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Infusiones</span>
+          <span class="price-pill text-xs">2.00 €</span>
+        </div>
+
+      </div>
+
+      <!-- Extra del tiempo -->
+      <div class="mt-3 p-3 rounded-xl bg-stone-100 border border-stone-200 text-xs text-neutral-700 flex items-center justify-between">
+        <span class="font-medium flex items-center gap-1.5">
+          <i class="fa-solid fa-cube text-sky-500"></i>
+          <strong>* Del Tiempo</strong> (Extra con Hielo)
+        </span>
+        <span class="font-bold text-neutral-900">+ 0.10 €</span>
+      </div>
+
+    </section>
+
+    <!-- LICORES & COCKTAIL -->
+    <section id="cat-licores" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 3 · Sobremesa & Barra</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-martini-glass text-neutral-700 text-lg"></i>
+            Licores y Cócteles
+          </h2>
+        </div>
+      </div>
+
+      <!-- Licores -->
+      <div class="mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Licores Tradicionales
+        </h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="chupitos licor limoncello grappa amaro">
+            <div>
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">Chupitos</h4>
+              <p class="text-xs text-neutral-500 mt-0.5">Limoncello, Grappa, Amaro del Capo, Sambuca, etc.</p>
+            </div>
+            <span class="price-pill">2.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="copa de licor combinada">
+            <div>
+              <h4 class="font-bold text-sm sm:text-base font-heading text-neutral-900 uppercase tracking-wide">Copa</h4>
+              <p class="text-xs text-neutral-500 mt-0.5">Servida en copa con hielo o sola.</p>
+            </div>
+            <span class="price-pill">4.00 €</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cocktail -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Cocktails & Aperitivi
+        </h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="gin tonic ginebra copa cocktail">
+            <span class="font-bold text-sm text-neutral-900 uppercase">Gin Tonic</span>
+            <span class="price-pill">7.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="gin lemon limon ginebra cocktail">
+            <span class="font-bold text-sm text-neutral-900 uppercase">Gin Lemon</span>
+            <span class="price-pill">7.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="ron cola roncola cocktail">
+            <span class="font-bold text-sm text-neutral-900 uppercase">Ron Cola</span>
+            <span class="price-pill">7.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="negroni ginebra vermut campari aperitivo cocktail">
+            <div>
+              <span class="font-bold text-sm text-neutral-900 uppercase">Negroni</span>
+              <p class="text-[11px] text-neutral-500">Gin, Campari, Vermut rojo</p>
+            </div>
+            <span class="price-pill">7.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="aperol spritz prosecco soda aperitivo italiano">
+            <div>
+              <span class="font-bold text-sm text-neutral-900 uppercase">Aperol Spritz</span>
+              <p class="text-[11px] text-neutral-500">Aperol, Prosecco, Soda</p>
+            </div>
+            <span class="price-pill">6.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="campari spritz prosecco soda aperitivo">
+            <div>
+              <span class="font-bold text-sm text-neutral-900 uppercase">Campari Spritz</span>
+              <p class="text-[11px] text-neutral-500">Campari, Prosecco, Soda</p>
+            </div>
+            <span class="price-pill">6.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="limoncello spritz limoncello prosecco">
+            <div>
+              <span class="font-bold text-sm text-neutral-900 uppercase">Limoncello Spritz</span>
+              <p class="text-[11px] text-neutral-500">Limoncello, Prosecco, Soda</p>
+            </div>
+            <span class="price-pill">6.00 €</span>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         PAGE 4: BEBIDAS & VINOS
+         ======================================================================== -->
+    
+    <section id="cat-bebidas" class="scroll-mt-32">
+      
+      <!-- Category Header -->
+      <div class="flex items-center justify-between border-b-2 border-neutral-900 pb-3 mb-6">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Página 4 · Bodega & Refrescos</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold font-heading text-neutral-900 flex items-center gap-2">
+            <i class="fa-solid fa-wine-bottle text-neutral-700 text-lg"></i>
+            Vinos y Bebidas
+          </h2>
+        </div>
+      </div>
+
+      <!-- Vinos -->
+      <div class="mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Vinos
+        </h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+          
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="vino tinto botella">
+            <div>
+              <h4 class="font-bold text-sm text-neutral-900 uppercase">Vino Tinto</h4>
+              <p class="text-xs text-neutral-500">Botella entera</p>
+            </div>
+            <span class="price-pill">22.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="vino blanco botella">
+            <div>
+              <h4 class="font-bold text-sm text-neutral-900 uppercase">Vino Blanco</h4>
+              <p class="text-xs text-neutral-500">Botella entera</p>
+            </div>
+            <span class="price-pill">22.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="vino blanco premium botella">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-bold text-sm text-neutral-900 uppercase">Vino Blanco Premium</h4>
+                <span class="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-amber-100 text-amber-900">Top</span>
+              </div>
+              <p class="text-xs text-neutral-500">Botella selección especial</p>
+            </div>
+            <span class="price-pill">28.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="vino en copa copa de vino tinto blanco">
+            <div>
+              <h4 class="font-bold text-sm text-neutral-900 uppercase">Vino en Copa</h4>
+              <p class="text-xs text-neutral-500">Copa servida de la casa</p>
+            </div>
+            <span class="price-pill">4.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-4 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="vermut rojo blanco vermouth aperitivo">
+            <div>
+              <h4 class="font-bold text-sm text-neutral-900 uppercase">Vermut</h4>
+              <p class="text-xs text-neutral-500">Rojo o Blanco</p>
+            </div>
+            <span class="price-pill">4.00 €</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Agua, Cerveza y Refrescos -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-900 inline-block"></span>
+          Agua, Cerveza y Refrescos
+        </h3>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="agua sin gas mineral">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Agua sin Gas</span>
+            <span class="price-pill text-xs">2.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="agua con gas mineral con gas">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Agua con Gas</span>
+            <span class="price-pill text-xs">2.50 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cerveza tercio birra">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Cerveza Tercio</span>
+            <span class="price-pill text-xs">3.00 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="cocacola coca cola refresco">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Coca-Cola</span>
+            <span class="price-pill text-xs">2.50 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="fanta naranja limon refresco">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Fanta</span>
+            <span class="price-pill text-xs">2.50 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="acuarius aquarius refresco">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Acuarius</span>
+            <span class="price-pill text-xs">2.50 €</span>
+          </div>
+
+          <div class="dish-card bg-white p-3.5 rounded-2xl border border-stone-200/90 shadow-xs flex justify-between items-center" data-name="nestea te limon refresco">
+            <span class="font-bold text-xs sm:text-sm text-neutral-900 uppercase">Nestea</span>
+            <span class="price-pill text-xs">2.50 €</span>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       BOTTOM LEGAL & RESTAURANT INFO FOOTER
+       ========================================================================== -->
+  <footer class="bg-white border-t border-stone-200 py-10 px-4 sm:px-6 text-center text-xs text-neutral-600">
+    <div class="max-w-3xl mx-auto space-y-4">
+      
+      <div class="flex items-center justify-center gap-2">
+        <img src="assets/images/degustibus-logo.png" alt="deGustibus" class="h-7 w-auto object-contain">
+        <span class="font-heading font-extrabold text-neutral-900 text-sm">deGustibus · Ristorante y Bar</span>
+      </div>
+
+      <p class="text-neutral-500">
+        Carrer de Borriana, 25, L'Eixample, 46005 València (España)<br>
+        Teléfono / WhatsApp: <a href="tel:+34629099295" class="underline font-medium text-neutral-800">+34 629 09 92 95</a>
+      </p>
+
+      <p class="text-[11px] text-neutral-400">
+        Todos los precios están expresados en euros (€) e incluyen el 10% de IVA reglamentario.<br>
+        Información sobre alérgenos disponible para el consumidor según el Reglamento (UE) nº 1169/2011.
+      </p>
+
+      <div class="pt-2">
+        <a href="index.html" class="inline-flex items-center gap-1.5 font-bold text-neutral-900 hover:underline">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Volver a la página principal de deGustibus</span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MOBILE FIXED BOTTOM ACTION BAR
+       ========================================================================== -->
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-4 py-2.5 flex items-center justify-between gap-2 shadow-lg">
+    
+    <a 
+      href="index.html" 
+      class="flex-1 py-2 px-3 rounded-xl bg-stone-100 border border-stone-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-1.5"
+    >
+      <i class="fa-solid fa-house text-xs"></i>
+      <span>Web</span>
+    </a>
+
+    <a 
+      href="https://wa.me/34629099295?text=Hola,%20estamos%20en%20la%20mesa%20de%20deGustibus%20y%20necesitamos%20asistencia" 
+      target="_blank"
+      rel="noopener"
+      class="flex-[2] py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:bg-emerald-700"
+    >
+      <i class="fa-brands fa-whatsapp text-sm"></i>
+      <span>Llamar Camarero</span>
+    </a>
+
+    <a 
+      href="tel:+34629099295" 
+      class="py-2 px-3 rounded-xl bg-neutral-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 active:bg-neutral-800"
+      title="Llamar por teléfono"
+    >
+      <i class="fa-solid fa-phone text-xs"></i>
+    </a>
+
+  </div>
+
+  <!-- JavaScript for Live Filtering and Category Active State -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Live Search
+      const searchInput = document.getElementById('menuSearch');
+      const clearBtn = document.getElementById('clearSearch');
+      const counter = document.getElementById('searchCounter');
+      const dishes = document.querySelectorAll('.dish-card');
+      const sections = document.querySelectorAll('main > section');
+
+      function filterMenu() {
+        const query = searchInput.value.trim().toLowerCase();
+        
+        if (query.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+
+        let visibleCount = 0;
+
+        dishes.forEach(dish => {
+          const name = (dish.getAttribute('data-name') || '').toLowerCase();
+          const text = dish.textContent.toLowerCase();
+          const matches = name.includes(query) || text.includes(query);
+
+          if (matches) {
+            dish.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            dish.classList.add('hidden');
+          }
+        });
+
+        // Hide empty sections if searching
+        sections.forEach(sec => {
+          const visibleDishesInSec = sec.querySelectorAll('.dish-card:not(.hidden)');
+          if (query.length > 0 && visibleDishesInSec.length === 0) {
+            sec.classList.add('hidden');
+          } else {
+            sec.classList.remove('hidden');
+          }
+        });
+
+        if (query.length > 0) {
+          counter.classList.remove('hidden');
+          counter.textContent = visibleCount === 1 
+            ? '1 plato encontrado' 
+            : `${visibleCount} platos encontrados`;
+        } else {
+          counter.classList.add('hidden');
+        }
+      }
+
+      searchInput.addEventListener('input', filterMenu);
+
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterMenu();
+        searchInput.focus();
+      });
+
+      // 2. Category Navigation Active State Tracking
+      const navLinks = document.querySelectorAll('.cat-pill');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+                // Scroll pill into view inside nav
+                link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, {
+        rootMargin: '-100px 0px -60% 0px'
+      });
+
+      sections.forEach(sec => observer.observe(sec));
+    });
+  </script>
+
+</body>
+</html>

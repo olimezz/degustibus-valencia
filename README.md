@@ -41,7 +41,8 @@ El sistema almacena la preferencia en `localStorage`, traduciendo instantáneame
 ```
 degustibus-valencia/
 │
-├── index.html                   # Documento principal accesible y responsive
+├── index.html                   # Documento principal accesible y responsive (con botón "Scopri il menu")
+├── menu.html                    # Carta digital exclusiva optimizada para QR en mesas de restaurante
 ├── README.md                    # Documentación y datos de contacto
 └── assets/
     ├── css/
