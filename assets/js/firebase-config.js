@@ -12,12 +12,13 @@
  */
 
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyDuZTa6ZPuAHfufptu8gC9I99WkQjzTVt8",
   authDomain: "degustibus-valencia.firebaseapp.com",
   projectId: "degustibus-valencia",
-  storageBucket: "degustibus-valencia.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456"
+  storageBucket: "degustibus-valencia.firebasestorage.app",
+  messagingSenderId: "934986099523",
+  appId: "1:934986099523:web:644e2a744c9c2d22d31df6",
+  measurementId: "G-SDFK5CS1XZ"
 };
 
 // Controlla se l'utente ha salvato una configurazione personalizzata nel browser
