@@ -71,6 +71,17 @@ class RestaurantDB {
     }
   }
 
+  // Registrazione nuovo utente staff/admin
+  async register(email, password) {
+    if (this.isCloud && this.auth) {
+      return await this.auth.createUserWithEmailAndPassword(email, password);
+    } else {
+      const dummyUser = { email: email, uid: "local-admin-new", displayName: "Amministratore deGustibus" };
+      localStorage.setItem('degustibus_admin_session', JSON.stringify(dummyUser));
+      return { user: dummyUser };
+    }
+  }
+
   // Logout
   async logout() {
     if (this.isCloud && this.auth) {

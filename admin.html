@@ -142,9 +142,20 @@
           id="loginSubmitBtn"
           class="w-full py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
         >
-          <span>Accedi al Pannello</span>
+          <span id="loginSubmitBtnText">Accedi al Pannello</span>
           <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
+
+        <div class="text-center pt-1">
+          <button 
+            type="button" 
+            id="toggleAuthModeBtn" 
+            onclick="toggleAuthMode()" 
+            class="text-xs text-neutral-600 hover:text-neutral-900 underline font-medium transition-colors"
+          >
+            Prima volta? Clicca qui per registrare l'account amministratore
+          </button>
+        </div>
       </form>
 
       <!-- Badge informativo stato di Firebase -->
@@ -827,6 +838,24 @@
       }, 3500);
     }
 
+    let isRegisterMode = false;
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      const submitText = document.getElementById('loginSubmitBtnText');
+      const toggleBtn = document.getElementById('toggleAuthModeBtn');
+      const errBox = document.getElementById('loginError');
+      errBox.classList.add('hidden');
+
+      if (isRegisterMode) {
+        submitText.textContent = "Registra Account & Accedi";
+        toggleBtn.textContent = "Hai già un account? Clicca qui per accedere";
+      } else {
+        submitText.textContent = "Accedi al Pannello";
+        toggleBtn.textContent = "Prima volta? Clicca qui per registrare l'account amministratore";
+      }
+    }
+
     // Inizializzazione pagina e autenticazione
     document.addEventListener('DOMContentLoaded', () => {
       updateCloudStatusBadges();
@@ -848,7 +877,7 @@
         }
       });
 
-      // Gestione form login
+      // Gestione form login / registrazione
       document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
@@ -856,20 +885,34 @@
         const errBox = document.getElementById('loginError');
         const errText = document.getElementById('loginErrorMsg');
         const submitBtn = document.getElementById('loginSubmitBtn');
+        const submitText = document.getElementById('loginSubmitBtnText');
 
         errBox.classList.add('hidden');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Accesso in corso...</span>`;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>${isRegisterMode ? 'Registrazione in corso...' : 'Accesso in corso...'}</span>`;
 
         try {
-          await window.restaurantDB.login(email, pass);
-          showToast("Benvenuto nel gestionale deGustibus!");
+          if (isRegisterMode) {
+            await window.restaurantDB.register(email, pass);
+            showToast("Account amministratore creato con successo!");
+          } else {
+            await window.restaurantDB.login(email, pass);
+            showToast("Benvenuto nel gestionale deGustibus!");
+          }
         } catch (error) {
           errBox.classList.remove('hidden');
-          errText.textContent = error.message || "Errore di autenticazione.";
+          let msg = error.message || "Errore di autenticazione.";
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+            msg = "Account non trovato o password errata. Se è la prima volta, clicca sotto su 'Prima volta? Clicca qui per registrare'.";
+          } else if (error.code === 'auth/email-already-in-use') {
+            msg = "Questa email è già registrata. Torna alla modalità di accesso per entrare.";
+          } else if (error.code === 'auth/weak-password') {
+            msg = "La password deve contenere almeno 6 caratteri.";
+          }
+          errText.textContent = msg;
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = `<span>Accedi al Pannello</span><i class="fa-solid fa-arrow-right text-xs"></i>`;
+          submitBtn.innerHTML = `<span id="loginSubmitBtnText">${isRegisterMode ? 'Registra Account & Accedi' : 'Accedi al Pannello'}</span><i class="fa-solid fa-arrow-right text-xs"></i>`;
         }
       });
 
