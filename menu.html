@@ -104,6 +104,15 @@
       border: 1px solid #e4e4e7;
     }
   </style>
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- App Data & Realtime Sync Layer -->
+  <script src="assets/data/initial-data.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/db-service.js"></script>
 </head>
 
 <body class="bg-warm-cream text-neutral-900 antialiased pb-28 sm:pb-16 selection:bg-neutral-900 selection:text-white">
@@ -162,6 +171,18 @@
 
     </div>
   </header>
+
+  <!-- ==========================================================================
+       DYNAMIC ANNOUNCEMENT BANNER (Controllato dal Gestionale in Tempo Reale)
+       ========================================================================== -->
+  <div id="liveBannerContainer" class="hidden px-4 sm:px-6 py-2.5 max-w-5xl mx-auto mt-2">
+    <div id="liveBannerBox" class="p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs font-semibold shadow-xs transition-all">
+      <div class="flex items-center gap-2.5">
+        <i id="liveBannerIcon" class="fa-solid fa-bullhorn text-sm shrink-0"></i>
+        <span id="liveBannerText"></span>
+      </div>
+    </div>
+  </div>
 
   <!-- ==========================================================================
        HERO & SEARCH SECTION
@@ -1330,6 +1351,88 @@
       });
 
       sections.forEach(sec => observer.observe(sec));
+
+      // 3. REALTIME SYNC CON FIREBASE CLOUD (O LOCALSTORAGE FALLBACK)
+      if (window.restaurantDB) {
+        // Ascolto Banner e Impostazioni
+        window.restaurantDB.subscribeToSettings((settings) => {
+          if (!settings) return;
+          const bannerContainer = document.getElementById('liveBannerContainer');
+          const bannerBox = document.getElementById('liveBannerBox');
+          const bannerText = document.getElementById('liveBannerText');
+          const bannerIcon = document.getElementById('liveBannerIcon');
+
+          if (settings.banner && settings.banner.active && settings.banner.text) {
+            bannerContainer.classList.remove('hidden');
+            bannerText.textContent = settings.banner.text;
+
+            // Stili banner
+            bannerBox.className = 'p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs font-semibold shadow-xs transition-all ';
+            if (settings.banner.type === 'promo') {
+              bannerBox.className += 'bg-amber-500 text-neutral-900 border border-amber-600';
+              bannerIcon.className = 'fa-solid fa-star text-neutral-900 text-sm shrink-0';
+            } else if (settings.banner.type === 'warning') {
+              bannerBox.className += 'bg-rose-600 text-white border border-rose-700';
+              bannerIcon.className = 'fa-solid fa-triangle-exclamation text-white text-sm shrink-0';
+            } else {
+              bannerBox.className += 'bg-neutral-900 text-white border border-neutral-800';
+              bannerIcon.className = 'fa-solid fa-circle-info text-amber-400 text-sm shrink-0';
+            }
+          } else {
+            bannerContainer.classList.add('hidden');
+          }
+        });
+
+        // Ascolto Piatti e Disponibilità in Tempo Reale
+        window.restaurantDB.subscribeToDishes((dishes) => {
+          if (!dishes || dishes.length === 0) return;
+          
+          // Mappa di disponibilità e prezzi per piatto
+          dishes.forEach(dish => {
+            // Cerca le card corrispondenti nel DOM
+            const cards = document.querySelectorAll('.dish-card');
+            cards.forEach(card => {
+              const cardName = (card.getAttribute('data-name') || '').toLowerCase();
+              const dishName = (dish.name || '').toLowerCase();
+
+              // Corrispondenza per nome piatto
+              if (cardName.includes(dishName) || dishName.includes(cardName.split(' ')[0])) {
+                const isAvailable = dish.available !== false;
+                
+                // Aggiorna prezzo se modificato
+                const priceEl = card.querySelector('.price-pill');
+                if (priceEl && dish.price) {
+                  const currentFormatted = Number(dish.price).toFixed(2) + ' €';
+                  if (priceEl.textContent.trim() !== currentFormatted) {
+                    priceEl.textContent = currentFormatted;
+                  }
+                }
+
+                // Gestione stato Disponibile / Fuori Menù
+                let badge = card.querySelector('.sold-out-badge');
+                if (!isAvailable) {
+                  card.style.opacity = '0.5';
+                  card.style.filter = 'grayscale(30%)';
+                  if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'sold-out-badge text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 ml-2 inline-block';
+                    badge.textContent = 'Agotado / Fuori Menù';
+                    const titleContainer = card.querySelector('h4') || card.querySelector('h3');
+                    if (titleContainer) {
+                      titleContainer.appendChild(badge);
+                    }
+                  }
+                } else {
+                  card.style.opacity = '1';
+                  card.style.filter = 'none';
+                  if (badge) badge.remove();
+                }
+              }
+            });
+          });
+        });
+      }
+
     });
   </script>
 

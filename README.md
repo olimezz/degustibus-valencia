@@ -42,13 +42,19 @@ El sistema almacena la preferencia en `localStorage`, traduciendo instantáneame
 degustibus-valencia/
 │
 ├── index.html                   # Documento principal accesible y responsive (con botón "Scopri il menu")
-├── menu.html                    # Carta digital exclusiva optimizada para QR en mesas de restaurante
+├── menu.html                    # Carta digital exclusiva optimizada para QR en mesas de restaurante (Realtime Sync)
+├── admin.html                   # Panel de gestión (CMS) protegido por autenticación para el restaurante
+├── FIREBASE_SETUP.md            # Guía rápida para la activación de Firebase Cloud (Auth + Firestore + Storage)
 ├── README.md                    # Documentación y datos de contacto
 └── assets/
     ├── css/
     │   └── style.css            # Design System, variables de marca y animaciones
+    ├── data/
+    │   └── initial-data.js      # Catálogo inicial de 61 platos y configuración de respaldo
     ├── js/
-    │   └── main.js              # Motor i18n (ES/IT/EN), horarios y WhatsApp
+    │   ├── main.js              # Motor i18n (ES/IT/EN), horarios y WhatsApp
+    │   ├── firebase-config.js   # Credenciales y conector Firebase
+    │   └── db-service.js        # Capa de sincronización reactiva en tiempo real
     └── images/
-        └── degustibus-logo.jpg  # Logotipo oficial
+        └── degustibus-logo.png  # Logotipo oficial
 ```

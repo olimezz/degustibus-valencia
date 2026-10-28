@@ -58,6 +58,15 @@
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- App Data & Realtime Sync Layer -->
+  <script src="assets/data/initial-data.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/db-service.js"></script>
 </head>
 
 <body class="bg-warm-cream text-neutral-900 selection:bg-neutral-900 selection:text-white">
@@ -144,6 +153,16 @@
       </div>
     </div>
   </header>
+  <!-- DYNAMIC LIVE ANNOUNCEMENT BANNER -->
+  <div id="liveBannerContainer" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3">
+    <div id="liveBannerBox" class="p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs font-semibold shadow-xs transition-all">
+      <div class="flex items-center gap-2.5">
+        <i id="liveBannerIcon" class="fa-solid fa-bullhorn text-sm shrink-0"></i>
+        <span id="liveBannerText"></span>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Mobile Navigation Drawer -->
   <div id="mobileMenuDrawer" class="fixed inset-0 z-50 bg-neutral-950/95 backdrop-blur-xl text-white transform translate-x-full transition-transform duration-300 flex flex-col p-6 lg:hidden">
@@ -1033,6 +1052,10 @@
 
       <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-stone-500 text-[11px] gap-2">
         <p>© 2026 deGustibus (Ristorante y Bar). Todos los derechos reservados.</p>
+        <a href="admin.html" class="hover:text-stone-300 transition-colors flex items-center gap-1.5 opacity-60 hover:opacity-100 py-1">
+          <i class="fa-solid fa-lock text-[10px]"></i>
+          <span>Gestionale Staff</span>
+        </a>
         <p>València, España · Carrer de Borriana, 25</p>
       </div>
 
@@ -1133,5 +1156,38 @@
 
   <!-- JavaScript -->
   <script src="assets/js/main.js"></script>
+  <!-- Dynamic Realtime Banner Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.restaurantDB) {
+        window.restaurantDB.subscribeToSettings((settings) => {
+          if (!settings) return;
+          const bannerContainer = document.getElementById('liveBannerContainer');
+          const bannerBox = document.getElementById('liveBannerBox');
+          const bannerText = document.getElementById('liveBannerText');
+          const bannerIcon = document.getElementById('liveBannerIcon');
+
+          if (bannerContainer && settings.banner && settings.banner.active && settings.banner.text) {
+            bannerContainer.classList.remove('hidden');
+            bannerText.textContent = settings.banner.text;
+
+            bannerBox.className = 'p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs font-semibold shadow-xs transition-all ';
+            if (settings.banner.type === 'promo') {
+              bannerBox.className += 'bg-amber-500 text-neutral-900 border border-amber-600';
+              bannerIcon.className = 'fa-solid fa-star text-neutral-900 text-sm shrink-0';
+            } else if (settings.banner.type === 'warning') {
+              bannerBox.className += 'bg-rose-600 text-white border border-rose-700';
+              bannerIcon.className = 'fa-solid fa-triangle-exclamation text-white text-sm shrink-0';
+            } else {
+              bannerBox.className += 'bg-neutral-900 text-white border border-neutral-800';
+              bannerIcon.className = 'fa-solid fa-circle-info text-amber-400 text-sm shrink-0';
+            }
+          } else if (bannerContainer) {
+            bannerContainer.classList.add('hidden');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

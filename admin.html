@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <title>Pannello Gestionale · deGustibus Valencia</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#18181b">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/degustibus-logo.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#18181b',
+              light: '#27272a',
+              subtle: '#3f3f46'
+            },
+            charcoal: '#121214',
+            warm: {
+              cream: '#faf8f5',
+              beige: '#f3efe6',
+              card: '#ffffff'
+            }
+          },
+          fontFamily: {
+            heading: ['Poppins', 'Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Firebase v10 Compat SDK (per compatibilità senza bundler) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+  <!-- Script di configurazione & dati -->
+  <script src="assets/data/initial-data.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/db-service.js"></script>
+
+  <style>
+    /* Toggle switch personalizzato */
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #10b981;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #10b981;
+    }
+    .dish-row-disabled {
+      opacity: 0.55;
+      background-color: #f4f4f5 !important;
+    }
+  </style>
+</head>
+
+<body class="bg-stone-100 text-neutral-900 font-body antialiased min-h-screen flex flex-col selection:bg-neutral-900 selection:text-white pb-24 sm:pb-8">
+
+  <!-- ==========================================================================
+       NOTIFICHE TOAST FLUTTUANTI
+       ========================================================================== -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-4"></div>
+
+  <!-- ==========================================================================
+       SCHERMATA 1: LOGIN (VISIBILE SOLO SE NON AUTENTICATI)
+       ========================================================================== -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-10 max-w-md w-full shadow-xl border border-stone-200">
+      
+      <!-- Brand Logo -->
+      <div class="text-center mb-6">
+        <img src="assets/images/degustibus-logo.png" alt="deGustibus" class="h-14 w-auto mx-auto mb-3 object-contain">
+        <h1 class="text-2xl font-extrabold font-heading text-neutral-900">
+          Gestionale deGustibus
+        </h1>
+        <p class="text-xs text-neutral-500 mt-1">
+          Accesso riservato al proprietario e allo staff autorizzato
+        </p>
+      </div>
+
+      <!-- Form Login -->
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+            Email / Username
+          </label>
+          <div class="relative">
+            <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-neutral-400 text-sm"></i>
+            <input 
+              type="text" 
+              id="loginEmail" 
+              placeholder="admin@degustibus.es" 
+              required
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+            Password
+          </label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-neutral-400 text-sm"></i>
+            <input 
+              type="password" 
+              id="loginPassword" 
+              placeholder="••••••••" 
+              required
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+          </div>
+        </div>
+
+        <div id="loginError" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+          <span id="loginErrorMsg">Credenziali non valide.</span>
+        </div>
+
+        <button 
+          type="submit" 
+          id="loginSubmitBtn"
+          class="w-full py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
+        >
+          <span>Accedi al Pannello</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+
+      <!-- Badge informativo stato di Firebase -->
+      <div class="mt-6 pt-5 border-t border-stone-200 text-center">
+        <div id="loginCloudBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span id="loginCloudStatus">Verifica stato connessione...</span>
+        </div>
+        <p class="text-[11px] text-neutral-400 mt-2">
+          Modalità Demo attiva: credenziali predefinite <code class="bg-stone-100 px-1 py-0.5 rounded text-neutral-700">admin@degustibus.es</code> / <code class="bg-stone-100 px-1 py-0.5 rounded text-neutral-700">degustibus2026</code>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SCHERMATA 2: PANNELLO DI CONTROLLO GESTIONALE (SE AUTENTICATI)
+       ========================================================================== -->
+  <div id="adminDashboard" class="hidden flex-1 flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 bg-white border-b border-stone-200 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        
+        <!-- Logo & Titolo -->
+        <div class="flex items-center gap-3">
+          <img src="assets/images/degustibus-logo.png" alt="deGustibus" class="h-9 w-auto object-contain">
+          <div>
+            <h2 class="font-heading font-extrabold text-sm sm:text-base text-neutral-900 leading-tight">
+              Gestionale deGustibus
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="cloudStatusIndicator" class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span id="cloudStatusText">Firebase Connesso</span>
+              </span>
+              <button onclick="openConfigModal()" class="text-[10px] text-neutral-400 hover:text-neutral-700 underline" title="Configurazione Firebase">
+                [Config]
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Azioni Rapide Top Bar -->
+        <div class="flex items-center gap-2">
+          <!-- Link Rapido al Menù Pubblico -->
+          <a 
+            href="menu.html" 
+            target="_blank" 
+            class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-bold text-neutral-700 hover:bg-stone-50 transition-colors"
+            title="Vedi il menù come lo vedono i clienti dal QR"
+          >
+            <i class="fa-solid fa-qrcode text-xs"></i>
+            <span>Vedi Menù Tavoli</span>
+          </a>
+
+          <!-- Pulsante Logout -->
+          <button 
+            onclick="handleLogout()" 
+            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-neutral-700 text-xs font-bold transition-colors flex items-center gap-1.5"
+            title="Esci dal gestionale"
+          >
+            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+            <span class="hidden sm:inline">Esci</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Navigation Tabs (Mobile-Friendly & Sticky) -->
+      <div class="bg-white border-t border-stone-200/80 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto flex items-center gap-2 sm:gap-6 overflow-x-auto no-scrollbar py-2">
+          
+          <button onclick="switchTab('dishes')" id="tabBtn-dishes" class="tab-button flex items-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold text-white bg-neutral-900 transition-all shrink-0">
+            <i class="fa-solid fa-utensils"></i>
+            <span>Menù & Piatti</span>
+            <span id="badgeDishesCount" class="bg-neutral-700 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button onclick="switchTab('images')" id="tabBtn-images" class="tab-button flex items-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold text-neutral-600 hover:text-neutral-900 transition-all shrink-0">
+            <i class="fa-solid fa-image"></i>
+            <span>Foto & Immagini</span>
+          </button>
+
+          <button onclick="switchTab('info')" id="tabBtn-info" class="tab-button flex items-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold text-neutral-600 hover:text-neutral-900 transition-all shrink-0">
+            <i class="fa-solid fa-clock"></i>
+            <span>Orari & Contatti</span>
+          </button>
+
+          <button onclick="switchTab('banner')" id="tabBtn-banner" class="tab-button flex items-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold text-neutral-600 hover:text-neutral-900 transition-all shrink-0">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Eventi & Banner</span>
+            <span id="badgeBannerActive" class="hidden w-2 h-2 rounded-full bg-amber-500"></span>
+          </button>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1">
+
+      <!-- ======================================================================
+           SEZIONE TAB 1: MENU E PIATTI
+           ====================================================================== -->
+      <div id="tabContent-dishes" class="tab-content space-y-6">
+        
+        <!-- Action Hub: Search, Filter, Add Dish & Seed -->
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          
+          <!-- Search Bar -->
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-neutral-400 text-xs"></i>
+            <input 
+              type="text" 
+              id="adminSearchInput" 
+              placeholder="Cerca piatto, ingrediente o prezzo..." 
+              class="w-full pl-9 pr-4 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+          </div>
+
+          <!-- Category Filter Dropdown -->
+          <div class="flex items-center gap-2">
+            <select 
+              id="adminCategoryFilter" 
+              class="py-2 px-3 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm font-semibold text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+              <option value="all">Tutte le Categorie</option>
+              <option value="entrantes">Entrantes y Tablas</option>
+              <option value="primeros">Primeros Platos</option>
+              <option value="infantil">Menú Infantil</option>
+              <option value="pizza">Pizza</option>
+              <option value="postres">Postres Caseros</option>
+              <option value="cafeteria">Cafetería</option>
+              <option value="licores">Licores y Cócteles</option>
+              <option value="bebidas">Vinos y Bebidas</option>
+            </select>
+
+            <!-- Pulsante Aggiungi Piatto -->
+            <button 
+              onclick="openDishModal()" 
+              class="py-2 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center gap-1.5 whitespace-nowrap"
+            >
+              <i class="fa-solid fa-plus text-xs"></i>
+              <span>Nuovo Piatto</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Banner Seed Automatico (se DB vuoto) -->
+        <div id="seedBanner" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div>
+            <h4 class="font-bold text-sm flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
+              Inizializzazione del Database Firebase
+            </h4>
+            <p class="text-xs text-amber-800 mt-0.5">
+              Il tuo database è attualmente vuoto. Vuoi caricare subito tutti i 61 piatti originali di deGustibus con 1 click?
+            </p>
+          </div>
+          <button 
+            onclick="triggerDatabaseSeed()" 
+            id="seedBtn" 
+            class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-xs whitespace-nowrap"
+          >
+            Carica i 61 Piatti Adesso
+          </button>
+        </div>
+
+        <!-- Quick Summary Cards (Totali, Fuori Menù) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
+            <span class="block text-[11px] uppercase font-bold text-neutral-400">Totale Piatti</span>
+            <span id="statTotalDishes" class="text-xl sm:text-2xl font-extrabold text-neutral-900">0</span>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
+            <span class="block text-[11px] uppercase font-bold text-emerald-600">Disponibili in Sala</span>
+            <span id="statActiveDishes" class="text-xl sm:text-2xl font-extrabold text-emerald-600">0</span>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
+            <span class="block text-[11px] uppercase font-bold text-rose-500">Esauriti (Fuori Menù)</span>
+            <span id="statOutDishes" class="text-xl sm:text-2xl font-extrabold text-rose-600">0</span>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
+            <span class="block text-[11px] uppercase font-bold text-amber-600">Aggiornamento</span>
+            <span class="text-xs font-bold text-neutral-700 mt-1 block">Live Cloud Sync</span>
+          </div>
+        </div>
+
+        <!-- Dish List / Table Container -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-xs overflow-hidden">
+          
+          <div class="p-4 border-b border-stone-200 flex items-center justify-between">
+            <h3 class="font-bold text-sm text-neutral-800 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-neutral-500"></i>
+              Elenco Piatti e Disponibilità in Tempo Reale
+            </h3>
+            <span id="filteredDishesCount" class="text-xs text-neutral-500 font-medium">Mostrati: 0</span>
+          </div>
+
+          <!-- Dishes Table for Desktop / Cards for Mobile -->
+          <div id="dishesListContainer" class="divide-y divide-stone-200">
+            <!-- Piatti renderizzati via JS -->
+            <div class="p-8 text-center text-neutral-400 text-sm">
+              <i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i>
+              <p>Caricamento piatti in corso...</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           SEZIONE TAB 2: FOTO & GALLERIA
+           ====================================================================== -->
+      <div id="tabContent-images" class="tab-content hidden space-y-6">
+        
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
+          <div class="max-w-2xl">
+            <h3 class="text-lg font-bold font-heading text-neutral-900 flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up text-neutral-700"></i>
+              Carica Nuova Immagine
+            </h3>
+            <p class="text-xs text-neutral-500 mt-1">
+              Scatta una foto con lo smartphone o selezionala dal dispositivo. Verrà salvata su Cloud Storage per essere assegnata ai piatti o alla galleria.
+            </p>
+
+            <!-- Upload Box -->
+            <div class="mt-4 p-6 border-2 border-dashed border-stone-300 hover:border-neutral-900 rounded-2xl text-center cursor-pointer transition-colors bg-stone-50" onclick="document.getElementById('galleryFileInput').click()">
+              <input type="file" id="galleryFileInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+              <i class="fa-solid fa-camera text-3xl text-neutral-400 mb-2"></i>
+              <p class="text-sm font-bold text-neutral-800">Tocca qui per scattare una foto o scegliere dalla galleria</p>
+              <p class="text-xs text-neutral-400 mt-1">Formati supportati: JPG, PNG, WEBP (Max 5MB)</p>
+            </div>
+
+            <!-- Upload Progress -->
+            <div id="uploadProgress" class="hidden mt-3 p-3 rounded-xl bg-stone-100 flex items-center gap-3">
+              <i class="fa-solid fa-spinner fa-spin text-neutral-700"></i>
+              <span class="text-xs font-semibold text-neutral-700">Caricamento immagine su Cloud in corso...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Galleria Immagini Caricate -->
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-neutral-700 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-images text-neutral-500"></i>
+            Archivio Immagini Ristorante
+          </h3>
+          <div id="uploadedImagesGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <!-- Verranno mostrate le immagini caricate -->
+            <div class="rounded-xl border border-stone-200 overflow-hidden relative group aspect-square bg-stone-100 flex items-center justify-center">
+              <img src="assets/images/real-pizza-pala.jpg" alt="Pizza" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-white text-[10px] text-center font-bold">
+                Pizza alla Pala
+              </div>
+            </div>
+            <div class="rounded-xl border border-stone-200 overflow-hidden relative group aspect-square bg-stone-100 flex items-center justify-center">
+              <img src="assets/images/carbonara.jpg" alt="Carbonara" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-white text-[10px] text-center font-bold">
+                Carbonara
+              </div>
+            </div>
+            <div class="rounded-xl border border-stone-200 overflow-hidden relative group aspect-square bg-stone-100 flex items-center justify-center">
+              <img src="assets/images/tiramisu.jpg" alt="Tiramisù" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-white text-[10px] text-center font-bold">
+                Tiramisù Casero
+              </div>
+            </div>
+            <div class="rounded-xl border border-stone-200 overflow-hidden relative group aspect-square bg-stone-100 flex items-center justify-center">
+              <img src="assets/images/spritz.jpg" alt="Spritz" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-white text-[10px] text-center font-bold">
+                Aperitivo Spritz
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           SEZIONE TAB 3: ORARI & CONTATTI
+           ====================================================================== -->
+      <div id="tabContent-info" class="tab-content hidden space-y-6">
+        
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs max-w-3xl">
+          <div class="mb-5">
+            <h3 class="text-lg font-bold font-heading text-neutral-900 flex items-center gap-2">
+              <i class="fa-solid fa-clock text-neutral-700"></i>
+              Orari di Apertura & Recapiti
+            </h3>
+            <p class="text-xs text-neutral-500 mt-1">
+              Modifica i dettagli visibili sul sito web e sulla carta digitale dei clienti.
+            </p>
+          </div>
+
+          <form id="settingsForm" onsubmit="handleSaveSettings(event)" class="space-y-4">
+            
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                Orari di Apertura Completi
+              </label>
+              <textarea 
+                id="infoHours" 
+                rows="2" 
+                class="w-full p-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              ></textarea>
+              <p class="text-[11px] text-neutral-400 mt-1">Es: Martes a Sábado: 13:00 - 16:00 y 19:30 - 23:30. Domingo y Lunes: Cerrado.</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                Nota Servizio Pranzo (Regola di Escursione/Prenotazione)
+              </label>
+              <input 
+                type="text" 
+                id="infoLunchNote" 
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              >
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Numero Telefono Chiamate
+                </label>
+                <input 
+                  type="text" 
+                  id="infoPhone" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                >
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Numero WhatsApp (Senza spazi o simboli)
+                </label>
+                <input 
+                  type="text" 
+                  id="infoWhatsapp" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                >
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                Indirizzo Ufficiale
+              </label>
+              <input 
+                type="text" 
+                id="infoAddress" 
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              >
+            </div>
+
+            <div class="pt-3">
+              <button 
+                type="submit" 
+                class="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition-all shadow-md flex items-center gap-2"
+              >
+                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                <span>Salva Modifiche Orari & Contatti</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           SEZIONE TAB 4: EVENTI & BANNER IN EVIDENZA
+           ====================================================================== -->
+      <div id="tabContent-banner" class="tab-content hidden space-y-6">
+        
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs max-w-3xl">
+          <div class="mb-5">
+            <h3 class="text-lg font-bold font-heading text-neutral-900 flex items-center gap-2">
+              <i class="fa-solid fa-bullhorn text-neutral-700"></i>
+              Comunicazioni Rapide & Banner in Evidenza
+            </h3>
+            <p class="text-xs text-neutral-500 mt-1">
+              Pubblica un messaggio visibile immediatamente in cima al sito web e sul menù dei tavoli (es. ferie, orari speciali, serate a tema).
+            </p>
+          </div>
+
+          <form id="bannerForm" onsubmit="handleSaveBanner(event)" class="space-y-4">
+            
+            <!-- Switch Attivazione Banner -->
+            <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+              <div>
+                <span class="block text-sm font-bold text-neutral-900">Stato del Banner</span>
+                <span class="block text-xs text-neutral-500">Se attivo, il messaggio compare su tutte le pagine pubbliche</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="bannerActiveToggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <!-- Tipo / Stile del Banner -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                Stile del Banner
+              </label>
+              <select id="bannerTypeSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900">
+                <option value="info">Informativo (Grigio/Blu Scuro)</option>
+                <option value="promo">Promozione Speciale (Ambra/Oro)</option>
+                <option value="warning">Avviso Chiusura / Urgente (Rosso/Corallo)</option>
+              </select>
+            </div>
+
+            <!-- Testo del Banner -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                Testo del Messaggio
+              </label>
+              <textarea 
+                id="bannerTextInput" 
+                rows="3" 
+                placeholder="Es: Domenica 15 Agosto saremo aperti sia a pranzo che a cena. Prenota il tuo tavolo!" 
+                class="w-full p-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              ></textarea>
+            </div>
+
+            <!-- Anteprima Live -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">
+                Anteprima Come Appare ai Clienti:
+              </label>
+              <div id="bannerPreviewBox" class="p-3.5 rounded-xl bg-neutral-900 text-white text-xs flex items-center gap-2.5 shadow-sm">
+                <i class="fa-solid fa-circle-info text-amber-400"></i>
+                <span id="bannerPreviewText">Il tuo messaggio apparirà qui...</span>
+              </div>
+            </div>
+
+            <div class="pt-3">
+              <button 
+                type="submit" 
+                class="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition-all shadow-md flex items-center gap-2"
+              >
+                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                <span>Salva & Pubblica Banner</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODAL AGGIUNGI / MODIFICA PIATTO
+       ========================================================================== -->
+  <div id="dishModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl border border-stone-200 my-8">
+      
+      <!-- Close Button -->
+      <button onclick="closeDishModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-neutral-600 transition-colors">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="mb-5">
+        <h3 id="dishModalTitle" class="text-xl font-bold font-heading text-neutral-900">
+          Nuovo Piatto
+        </h3>
+        <p class="text-xs text-neutral-500 mt-0.5">
+          Inserisci i dettagli del piatto. Le modifiche saranno visibili all'istante sui tavoli.
+        </p>
+      </div>
+
+      <form id="dishForm" onsubmit="handleSaveDish(event)" class="space-y-4">
+        <input type="hidden" id="dishModalId">
+
+        <!-- Nome Piatto -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+            Nome del Piatto *
+          </label>
+          <input 
+            type="text" 
+            id="dishModalName" 
+            placeholder="Es: Tagliatelle al Ragù di Cervo" 
+            required 
+            class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          >
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Categoria -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+              Categoria *
+            </label>
+            <select id="dishModalCategory" required class="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900">
+              <option value="entrantes">Entrantes y Tablas</option>
+              <option value="primeros">Primeros Platos</option>
+              <option value="infantil">Menú Infantil</option>
+              <option value="pizza">Pizza</option>
+              <option value="postres">Postres Caseros</option>
+              <option value="cafeteria">Cafetería</option>
+              <option value="licores">Licores y Cócteles</option>
+              <option value="bebidas">Vinos y Bebidas</option>
+            </select>
+          </div>
+
+          <!-- Prezzo -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+              Prezzo (€) *
+            </label>
+            <input 
+              type="number" 
+              step="0.05" 
+              min="0" 
+              id="dishModalPrice" 
+              placeholder="12.50" 
+              required 
+              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+          </div>
+        </div>
+
+        <!-- Descrizione / Ingredienti -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+            Descrizione & Ingredienti
+          </label>
+          <textarea 
+            id="dishModalDescription" 
+            rows="2" 
+            placeholder="Es: Pasta fresca tirata a mano, guanciale croccante, pecorino e pepe nero..." 
+            class="w-full p-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          ></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Badge -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+              Etichetta / Badge
+            </label>
+            <input 
+              type="text" 
+              id="dishModalBadge" 
+              placeholder="Es: Chef, Piccante, Top" 
+              class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            >
+          </div>
+
+          <!-- Disponibilità Switch -->
+          <div class="flex flex-col justify-end">
+            <label class="inline-flex items-center gap-2 cursor-pointer pb-2">
+              <input type="checkbox" id="dishModalAvailable" checked class="sr-only peer">
+              <div class="w-10 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+              <span class="text-xs font-bold text-neutral-700">Disponibile</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2">
+          <button 
+            type="button" 
+            onclick="closeDishModal()" 
+            class="px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-bold text-neutral-700 hover:bg-stone-100 transition-colors"
+          >
+            Annulla
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs transition-colors shadow-sm flex items-center gap-1.5"
+          >
+            <i class="fa-solid fa-check text-xs"></i>
+            <span>Salva Piatto</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL CONFIGURAZIONE FIREBASE
+       ========================================================================== -->
+  <div id="configModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl border border-stone-200">
+      
+      <button onclick="closeConfigModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-neutral-600 transition-colors">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-xl font-bold font-heading text-neutral-900 flex items-center gap-2">
+          <i class="fa-solid fa-gear text-neutral-700"></i>
+          Parametri Firebase Cloud
+        </h3>
+        <p class="text-xs text-neutral-500 mt-1">
+          Incolla l'oggetto di configurazione fornito dalla console Firebase per attivare il Cloud Realtime per tutti i clienti.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-neutral-700 mb-1">API Key</label>
+          <input type="text" id="cfgApiKey" class="w-full px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-700 mb-1">Project ID</label>
+          <input type="text" id="cfgProjectId" class="w-full px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-700 mb-1">Auth Domain</label>
+          <input type="text" id="cfgAuthDomain" class="w-full px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-700 mb-1">Storage Bucket</label>
+          <input type="text" id="cfgStorageBucket" class="w-full px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-mono">
+        </div>
+      </div>
+
+      <div class="pt-4 flex items-center justify-between">
+        <button onclick="resetFirebaseConfig()" class="text-xs text-rose-600 hover:underline">
+          Ripristina Default
+        </button>
+        <div class="flex gap-2">
+          <button onclick="closeConfigModal()" class="px-3.5 py-2 rounded-xl border border-stone-300 text-xs font-bold">
+            Annulla
+          </button>
+          <button onclick="saveFirebaseConfigFromModal()" class="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-bold">
+            Salva & Ricarica
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       LOGICA JS DI ADMIN DASHBOARD
+       ========================================================================== -->
+  <script>
+    let currentDishes = [];
+    let currentSettings = {};
+    let unsubscribeDishes = null;
+    let unsubscribeSettings = null;
+
+    // Toast notification utility
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const bgColor = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-neutral-900';
+      const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-bell';
+
+      toast.className = `${bgColor} text-white px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 text-xs font-semibold pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icon} text-sm"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      // Remove after 3.5s
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Inizializzazione pagina e autenticazione
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCloudStatusBadges();
+
+      // Ascolto stato login
+      window.restaurantDB.onAuthStateChanged((user) => {
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('adminDashboard');
+
+        if (user) {
+          loginScreen.classList.add('hidden');
+          dashboard.classList.remove('hidden');
+          initDashboardSubscriptions();
+        } else {
+          loginScreen.classList.remove('hidden');
+          dashboard.classList.add('hidden');
+          if (unsubscribeDishes) unsubscribeDishes();
+          if (unsubscribeSettings) unsubscribeSettings();
+        }
+      });
+
+      // Gestione form login
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value.trim();
+        const errBox = document.getElementById('loginError');
+        const errText = document.getElementById('loginErrorMsg');
+        const submitBtn = document.getElementById('loginSubmitBtn');
+
+        errBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Accesso in corso...</span>`;
+
+        try {
+          await window.restaurantDB.login(email, pass);
+          showToast("Benvenuto nel gestionale deGustibus!");
+        } catch (error) {
+          errBox.classList.remove('hidden');
+          errText.textContent = error.message || "Errore di autenticazione.";
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>Accedi al Pannello</span><i class="fa-solid fa-arrow-right text-xs"></i>`;
+        }
+      });
+
+      // Ricerca e filtro categorie
+      document.getElementById('adminSearchInput').addEventListener('input', renderDishesTable);
+      document.getElementById('adminCategoryFilter').addEventListener('change', renderDishesTable);
+
+      // Anteprima real-time banner
+      const bannerInput = document.getElementById('bannerTextInput');
+      if (bannerInput) {
+        bannerInput.addEventListener('input', (e) => {
+          document.getElementById('bannerPreviewText').textContent = e.target.value || "Il tuo messaggio apparirà qui...";
+        });
+      }
+    });
+
+    // Logout
+    async function handleLogout() {
+      if (confirm("Vuoi uscire dal gestionale?")) {
+        await window.restaurantDB.logout();
+        showToast("Disconnesso con successo.");
+      }
+    }
+
+    // Sottoscrizione realtime al database
+    function initDashboardSubscriptions() {
+      // 1. Ascolto piatti
+      unsubscribeDishes = window.restaurantDB.subscribeToDishes((dishes, needsSeed) => {
+        currentDishes = dishes;
+        document.getElementById('badgeDishesCount').textContent = dishes.length;
+        
+        // Se il database è vuoto, mostra il banner per importare i 61 piatti
+        const seedBanner = document.getElementById('seedBanner');
+        if (needsSeed || dishes.length === 0) {
+          seedBanner.classList.remove('hidden');
+        } else {
+          seedBanner.classList.add('hidden');
+        }
+
+        updateStats(dishes);
+        renderDishesTable();
+      });
+
+      // 2. Ascolto impostazioni, orari e banner
+      unsubscribeSettings = window.restaurantDB.subscribeToSettings((settings) => {
+        currentSettings = settings || {};
+        populateSettingsFields(currentSettings);
+      });
+    }
+
+    // Aggiornamento statistiche
+    function updateStats(dishes) {
+      document.getElementById('statTotalDishes').textContent = dishes.length;
+      const active = dishes.filter(d => d.available !== false).length;
+      const out = dishes.length - active;
+      document.getElementById('statActiveDishes').textContent = active;
+      document.getElementById('statOutDishes').textContent = out;
+    }
+
+    // Render della tabella piatti
+    function renderDishesTable() {
+      const container = document.getElementById('dishesListContainer');
+      const query = (document.getElementById('adminSearchInput').value || '').toLowerCase().trim();
+      const cat = document.getElementById('adminCategoryFilter').value;
+
+      const filtered = currentDishes.filter(dish => {
+        const matchesCat = cat === 'all' || dish.category === cat;
+        const matchesQuery = !query || 
+          (dish.name && dish.name.toLowerCase().includes(query)) ||
+          (dish.description && dish.description.toLowerCase().includes(query)) ||
+          (dish.price && dish.price.toString().includes(query));
+        return matchesCat && matchesQuery;
+      });
+
+      document.getElementById('filteredDishesCount').textContent = `Mostrati: ${filtered.length} di ${currentDishes.length}`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-neutral-400 text-sm">
+            <i class="fa-solid fa-plate-wheat text-2xl mb-2 text-stone-300"></i>
+            <p>Nessun piatto trovato con i filtri correnti.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(dish => {
+        const isAvailable = dish.available !== false;
+        const formattedPrice = Number(dish.price).toFixed(2);
+        const disabledClass = !isAvailable ? 'dish-row-disabled' : '';
+
+        return `
+          <div class="p-4 hover:bg-stone-50/80 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${disabledClass}">
+            
+            <!-- Info Piatto -->
+            <div class="flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="font-bold text-sm text-neutral-900 font-heading">
+                  ${dish.name}
+                </h4>
+                
+                ${dish.badge ? `
+                  <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                    ${dish.badge}
+                  </span>
+                ` : ''}
+
+                <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+                  ${getCategoryLabel(dish.category)}
+                </span>
+
+                ${!isAvailable ? `
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+                    Fuori Menù
+                  </span>
+                ` : ''}
+              </div>
+
+              ${dish.description ? `
+                <p class="text-xs text-neutral-500 mt-1 line-clamp-1">
+                  ${dish.description}
+                </p>
+              ` : ''}
+            </div>
+
+            <!-- Prezzo & Azioni Rapide (Switch Disponibilità + Modifica + Elimina) -->
+            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+              
+              <!-- Prezzo con click veloce per modifica -->
+              <span class="font-extrabold text-sm text-neutral-900 bg-stone-100 px-2.5 py-1 rounded-lg border border-stone-200">
+                ${formattedPrice} €
+              </span>
+
+              <!-- Switch 1-Click: Disponibile / Fuori Menù -->
+              <div class="flex items-center gap-1.5" title="Accendi/Spegni piatto in tempo reale sui tavoli">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    ${isAvailable ? 'checked' : ''} 
+                    onchange="toggleDish('${dish.id}', this.checked)"
+                    class="sr-only peer"
+                  >
+                  <div class="w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              <!-- Modifica -->
+              <button 
+                onclick="editDish('${dish.id}')" 
+                class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-stone-200 text-neutral-700 flex items-center justify-center transition-colors text-xs"
+                title="Modifica dettagli piatto"
+              >
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <!-- Elimina -->
+              <button 
+                onclick="deleteDish('${dish.id}', '${dish.name.replace(/'/g, "\\'")}')" 
+                class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-rose-100 hover:text-rose-600 text-neutral-400 flex items-center justify-center transition-colors text-xs"
+                title="Elimina piatto dal menù"
+              >
+                <i class="fa-solid fa-trash"></i>
+              </button>
+
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getCategoryLabel(catId) {
+      const map = {
+        'entrantes': 'Entrantes',
+        'primeros': 'Primeros Platos',
+        'infantil': 'Infantil',
+        'pizza': 'Pizza',
+        'postres': 'Postres',
+        'cafeteria': 'Cafetería',
+        'licores': 'Licores/Cocktail',
+        'bebidas': 'Bebidas'
+      };
+      return map[catId] || catId;
+    }
+
+    // Toggle 1-Click Disponibilità Piatto
+    async function toggleDish(dishId, isAvailable) {
+      try {
+        await window.restaurantDB.toggleDishAvailability(dishId, isAvailable);
+        showToast(isAvailable ? "Piatto riattivato in sala!" : "Piatto impostato su Esaurito / Fuori Menù.");
+      } catch (err) {
+        showToast("Errore durante l'aggiornamento: " + err.message, "error");
+      }
+    }
+
+    // Modal Piatto (Crea / Modifica)
+    function openDishModal(dish = null) {
+      const modal = document.getElementById('dishModal');
+      const title = document.getElementById('dishModalTitle');
+      
+      document.getElementById('dishModalId').value = dish ? dish.id : '';
+      document.getElementById('dishModalName').value = dish ? dish.name : '';
+      document.getElementById('dishModalCategory').value = dish ? dish.category : 'primeros';
+      document.getElementById('dishModalPrice').value = dish ? dish.price : '';
+      document.getElementById('dishModalDescription').value = dish ? (dish.description || '') : '';
+      document.getElementById('dishModalBadge').value = dish ? (dish.badge || '') : '';
+      document.getElementById('dishModalAvailable').checked = dish ? (dish.available !== false) : true;
+
+      title.textContent = dish ? "Modifica Piatto" : "Nuovo Piatto";
+      modal.classList.remove('hidden');
+    }
+
+    function closeDishModal() {
+      document.getElementById('dishModal').classList.add('hidden');
+    }
+
+    function editDish(dishId) {
+      const dish = currentDishes.find(d => d.id === dishId);
+      if (dish) openDishModal(dish);
+    }
+
+    async function handleSaveDish(e) {
+      e.preventDefault();
+      const id = document.getElementById('dishModalId').value;
+      const dishData = {
+        id: id || ('dish-' + Date.now()),
+        name: document.getElementById('dishModalName').value.trim(),
+        category: document.getElementById('dishModalCategory').value,
+        price: parseFloat(document.getElementById('dishModalPrice').value),
+        description: document.getElementById('dishModalDescription').value.trim(),
+        badge: document.getElementById('dishModalBadge').value.trim(),
+        available: document.getElementById('dishModalAvailable').checked
+      };
+
+      try {
+        await window.restaurantDB.saveDish(dishData);
+        closeDishModal();
+        showToast("Piatto salvato con successo!");
+      } catch (err) {
+        showToast("Errore salvataggio piatto: " + err.message, "error");
+      }
+    }
+
+    async function deleteDish(dishId, name) {
+      if (confirm(`Sei sicuro di voler eliminare "${name}" dal menù?`)) {
+        try {
+          await window.restaurantDB.deleteDish(dishId);
+          showToast(`"${name}" eliminato dal menù.`);
+        } catch (err) {
+          showToast("Errore eliminazione: " + err.message, "error");
+        }
+      }
+    }
+
+    // Inizializza Database con i 61 piatti (Seed)
+    async function triggerDatabaseSeed() {
+      const btn = document.getElementById('seedBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Caricamento in corso...`;
+
+      try {
+        const count = await window.restaurantDB.seedInitialDishes();
+        showToast(`Completato! Caricati ${count} piatti nel database.`);
+      } catch (err) {
+        showToast("Errore seed: " + err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `Carica i 61 Piatti Adesso`;
+      }
+    }
+
+    // Gestione Orari & Contatti
+    function populateSettingsFields(settings) {
+      if (!settings) return;
+      if (document.getElementById('infoHours')) {
+        document.getElementById('infoHours').value = settings.hoursText || '';
+      }
+      if (document.getElementById('infoLunchNote')) {
+        document.getElementById('infoLunchNote').value = settings.lunchNote || '';
+      }
+      if (document.getElementById('infoPhone')) {
+        document.getElementById('infoPhone').value = settings.phone || '';
+      }
+      if (document.getElementById('infoWhatsapp')) {
+        document.getElementById('infoWhatsapp').value = settings.whatsapp || '';
+      }
+      if (document.getElementById('infoAddress')) {
+        document.getElementById('infoAddress').value = settings.address || '';
+      }
+
+      // Banner fields
+      if (settings.banner) {
+        document.getElementById('bannerActiveToggle').checked = !!settings.banner.active;
+        document.getElementById('bannerTypeSelect').value = settings.banner.type || 'info';
+        document.getElementById('bannerTextInput').value = settings.banner.text || '';
+        document.getElementById('bannerPreviewText').textContent = settings.banner.text || 'Il tuo messaggio apparirà qui...';
+        
+        const badge = document.getElementById('badgeBannerActive');
+        if (settings.banner.active) {
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+      }
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const updated = {
+        ...currentSettings,
+        hoursText: document.getElementById('infoHours').value.trim(),
+        lunchNote: document.getElementById('infoLunchNote').value.trim(),
+        phone: document.getElementById('infoPhone').value.trim(),
+        whatsapp: document.getElementById('infoWhatsapp').value.trim(),
+        address: document.getElementById('infoAddress').value.trim()
+      };
+
+      try {
+        await window.restaurantDB.saveSettings(updated);
+        showToast("Orari e contatti aggiornati!");
+      } catch (err) {
+        showToast("Errore salvataggio orari: " + err.message, "error");
+      }
+    }
+
+    async function handleSaveBanner(e) {
+      e.preventDefault();
+      const banner = {
+        active: document.getElementById('bannerActiveToggle').checked,
+        type: document.getElementById('bannerTypeSelect').value,
+        text: document.getElementById('bannerTextInput').value.trim()
+      };
+
+      const updated = {
+        ...currentSettings,
+        banner
+      };
+
+      try {
+        await window.restaurantDB.saveSettings(updated);
+        showToast(banner.active ? "Banner pubblicato con successo!" : "Banner disattivato.");
+      } catch (err) {
+        showToast("Errore salvataggio banner: " + err.message, "error");
+      }
+    }
+
+    // Caricamento Immagini
+    async function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const progress = document.getElementById('uploadProgress');
+      progress.classList.remove('hidden');
+
+      try {
+        const url = await window.restaurantDB.uploadImage(file);
+        progress.classList.add('hidden');
+        showToast("Immagine caricata con successo!");
+        
+        // Aggiungi anteprima nella griglia immagini
+        const grid = document.getElementById('uploadedImagesGrid');
+        const card = document.createElement('div');
+        card.className = "rounded-xl border border-stone-200 overflow-hidden relative group aspect-square bg-stone-100 flex items-center justify-center";
+        card.innerHTML = `
+          <img src="${url}" alt="Foto" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-white text-[10px] text-center font-bold">
+            Nuova foto
+          </div>
+        `;
+        grid.prepend(card);
+      } catch (err) {
+        progress.classList.add('hidden');
+        showToast("Errore caricamento immagine: " + err.message, "error");
+      }
+    }
+
+    // Tabs Switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('bg-neutral-900', 'text-white');
+        btn.classList.add('text-neutral-600');
+      });
+
+      const activeContent = document.getElementById('tabContent-' + tabId);
+      const activeBtn = document.getElementById('tabBtn-' + tabId);
+
+      if (activeContent) activeContent.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-neutral-600');
+        activeBtn.classList.add('bg-neutral-900', 'text-white');
+      }
+    }
+
+    // Stato Connessione Firebase
+    function updateCloudStatusBadges() {
+      const isConfigured = window.isFirebaseConfigured && window.isFirebaseConfigured();
+      const loginStatus = document.getElementById('loginCloudStatus');
+      const topStatus = document.getElementById('cloudStatusText');
+      const topIndicator = document.getElementById('cloudStatusIndicator');
+
+      if (isConfigured) {
+        if (loginStatus) loginStatus.textContent = "Connesso a Firebase Cloud";
+        if (topStatus) topStatus.textContent = "Firebase Cloud Connesso";
+      } else {
+        if (loginStatus) loginStatus.textContent = "Modalità Demo Locale Attiva";
+        if (topStatus) topStatus.textContent = "Modalità Demo Locale";
+        if (topIndicator) {
+          topIndicator.classList.remove('text-emerald-600');
+          topIndicator.classList.add('text-amber-600');
+        }
+      }
+    }
+
+    // Config Modal
+    function openConfigModal() {
+      const cfg = window.FIREBASE_CONFIG || {};
+      document.getElementById('cfgApiKey').value = cfg.apiKey || '';
+      document.getElementById('cfgProjectId').value = cfg.projectId || '';
+      document.getElementById('cfgAuthDomain').value = cfg.authDomain || '';
+      document.getElementById('cfgStorageBucket').value = cfg.storageBucket || '';
+      document.getElementById('configModal').classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('configModal').classList.add('hidden');
+    }
+
+    function saveFirebaseConfigFromModal() {
+      const newConfig = {
+        apiKey: document.getElementById('cfgApiKey').value.trim(),
+        projectId: document.getElementById('cfgProjectId').value.trim(),
+        authDomain: document.getElementById('cfgAuthDomain').value.trim(),
+        storageBucket: document.getElementById('cfgStorageBucket').value.trim(),
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:custom"
+      };
+
+      localStorage.setItem('degustibus_firebase_config', JSON.stringify(newConfig));
+      alert("Parametri salvati! La pagina verrà ricaricata.");
+      window.location.reload();
+    }
+
+    function resetFirebaseConfig() {
+      if (confirm("Vuoi cancellare i parametri personalizzati e ripristinare il default?")) {
+        localStorage.removeItem('degustibus_firebase_config');
+        window.location.reload();
+      }
+    }
+  </script>
+
+</body>
+</html>
