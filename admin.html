@@ -700,6 +700,33 @@
           ></textarea>
         </div>
 
+        <!-- Immagine del Piatto -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+            Foto del Piatto
+          </label>
+          <div class="flex items-center gap-3">
+            <div id="dishModalImagePreviewBox" class="w-14 h-14 rounded-xl bg-stone-100 border border-stone-200 overflow-hidden flex items-center justify-center shrink-0">
+              <img id="dishModalImagePreview" src="" alt="Anteprima" class="hidden w-full h-full object-cover">
+              <i id="dishModalImagePlaceholder" class="fa-solid fa-camera text-neutral-400 text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <input type="file" id="dishModalFileInput" accept="image/*" class="hidden" onchange="handleDishModalImage(event)">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="document.getElementById('dishModalFileInput').click()" class="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 border border-stone-300 text-xs font-bold text-neutral-700 transition-colors flex items-center gap-1.5">
+                  <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                  <span id="dishImageBtnText">Carica Foto</span>
+                </button>
+                <button type="button" id="removeDishImageBtn" onclick="removeDishImage()" class="hidden text-xs text-rose-600 hover:underline">
+                  Rimuovi
+                </button>
+              </div>
+              <input type="hidden" id="dishModalImageUrl">
+              <p class="text-[10px] text-neutral-400 mt-1">Scatta una foto o caricala dalla galleria</p>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
           <!-- Badge -->
           <div>
@@ -1008,11 +1035,13 @@
           <div class="p-4 hover:bg-stone-50/80 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${disabledClass}">
             
             <!-- Info Piatto -->
-            <div class="flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h4 class="font-bold text-sm text-neutral-900 font-heading">
-                  ${dish.name}
-                </h4>
+            <div class="flex items-center gap-3 flex-1">
+              ${dish.image ? `<img src="${dish.image}" alt="${dish.name}" class="w-12 h-12 rounded-xl object-cover border border-stone-200 shrink-0">` : ''}
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-bold text-sm text-neutral-900 font-heading">
+                    ${dish.name}
+                  </h4>
                 
                 ${dish.badge ? `
                   <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
@@ -1036,6 +1065,7 @@
                   ${dish.description}
                 </p>
               ` : ''}
+              </div>
             </div>
 
             <!-- Prezzo & Azioni Rapide (Switch Disponibilità + Modifica + Elimina) -->
@@ -1120,6 +1150,23 @@
       document.getElementById('dishModalDescription').value = dish ? (dish.description || '') : '';
       document.getElementById('dishModalBadge').value = dish ? (dish.badge || '') : '';
       document.getElementById('dishModalAvailable').checked = dish ? (dish.available !== false) : true;
+      document.getElementById('dishModalImageUrl').value = dish ? (dish.image || '') : '';
+
+      const preview = document.getElementById('dishModalImagePreview');
+      const placeholder = document.getElementById('dishModalImagePlaceholder');
+      const removeBtn = document.getElementById('removeDishImageBtn');
+
+      if (dish && dish.image) {
+        preview.src = dish.image;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+      } else {
+        preview.src = '';
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        removeBtn.classList.add('hidden');
+      }
 
       title.textContent = dish ? "Modifica Piatto" : "Nuovo Piatto";
       modal.classList.remove('hidden');
@@ -1134,6 +1181,38 @@
       if (dish) openDishModal(dish);
     }
 
+    async function handleDishModalImage(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const preview = document.getElementById('dishModalImagePreview');
+      const placeholder = document.getElementById('dishModalImagePlaceholder');
+      const removeBtn = document.getElementById('removeDishImageBtn');
+
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+      removeBtn.classList.remove('hidden');
+
+      showToast("Caricamento foto in corso...", "info");
+      try {
+        const cloudUrl = await window.restaurantDB.uploadImage(file, 'dishes');
+        document.getElementById('dishModalImageUrl').value = cloudUrl;
+        showToast("Foto caricata con successo!");
+      } catch (err) {
+        showToast("Errore caricamento foto: " + err.message, "error");
+      }
+    }
+
+    function removeDishImage() {
+      document.getElementById('dishModalImageUrl').value = '';
+      document.getElementById('dishModalFileInput').value = '';
+      document.getElementById('dishModalImagePreview').src = '';
+      document.getElementById('dishModalImagePreview').classList.add('hidden');
+      document.getElementById('dishModalImagePlaceholder').classList.remove('hidden');
+      document.getElementById('removeDishImageBtn').classList.add('hidden');
+    }
+
     async function handleSaveDish(e) {
       e.preventDefault();
       const id = document.getElementById('dishModalId').value;
@@ -1144,7 +1223,8 @@
         price: parseFloat(document.getElementById('dishModalPrice').value),
         description: document.getElementById('dishModalDescription').value.trim(),
         badge: document.getElementById('dishModalBadge').value.trim(),
-        available: document.getElementById('dishModalAvailable').checked
+        available: document.getElementById('dishModalAvailable').checked,
+        image: document.getElementById('dishModalImageUrl').value || ''
       };
 
       try {

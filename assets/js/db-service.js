@@ -16,11 +16,11 @@ class RestaurantDB {
     const app = window.initFirebaseApp ? window.initFirebaseApp() : null;
     if (app && typeof firebase !== 'undefined') {
       try {
-        this.auth = firebase.auth();
-        this.firestore = firebase.firestore();
-        this.storage = firebase.storage();
-        this.isCloud = true;
-        console.log("RestaurantDB: connesso a Firebase Cloud");
+        this.auth = typeof firebase.auth === 'function' ? firebase.auth() : null;
+        this.firestore = typeof firebase.firestore === 'function' ? firebase.firestore() : null;
+        this.storage = typeof firebase.storage === 'function' ? firebase.storage() : null;
+        this.isCloud = !!this.firestore;
+        console.log("RestaurantDB: connesso a Firebase Cloud (isCloud: " + this.isCloud + ")");
       } catch (err) {
         console.warn("RestaurantDB: errore connessione Firebase, fallback a locale:", err);
         this.isCloud = false;
@@ -164,10 +164,10 @@ class RestaurantDB {
   // Cambia disponibilità (In Menu / Esaurito)
   async toggleDishAvailability(dishId, isAvailable) {
     if (this.isCloud && this.firestore) {
-      await this.firestore.collection('dishes').doc(dishId).update({
+      await this.firestore.collection('dishes').doc(dishId).set({
         available: isAvailable,
         updatedAt: new Date().toISOString()
-      });
+      }, { merge: true });
     } else {
       const dishes = this.getLocalDishes();
       const dish = dishes.find(d => d.id === dishId);
